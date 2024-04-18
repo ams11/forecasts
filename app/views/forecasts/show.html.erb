@@ -1,0 +1,41 @@
+<h2>
+  Forecast for <%= forecast_info[:zipcode] %>&nbsp;
+  (<%= forecast_info[:location] %>)&nbsp;
+  <% if forecast_info[:cached] %>
+    <span style="color: red">(Cached <%= forecast_info[:cached] %> ago)</span>
+  <% end %>
+</h2>
+
+<div>
+  <label>Temperature: </label><br/>
+  <div style="margin-left: 15px">
+    <div><label>Current:</label> <%= forecast_info[:temperature] %> F</div>
+    <div><label>Low:</label> <%= forecast_info[:day_min] %> F</div>
+    <div><label>High:</label> <%= forecast_info[:day_max] %> F</div>
+  </div>
+</div>
+<div>
+  <label>Conditions: </label><%= forecast_info[:conditions] %>
+</div>
+<div>
+  <label>Wind: </label><%= forecast_info[:wind] %>
+</div>
+<div>
+  <label>7 Day Forecast:</label>
+  <% forecast_info[:upcoming_weather_data].each do |date, temperatures| %>
+    <div>
+      <%= date %>: Low: <%= temperatures[:min] %>; High: <%= temperatures[:max] %>
+    </div>
+  <% end %>
+</div>
+
+<div style="margin-top: 30px">
+  <iframe
+    width="450"
+    height="250"
+    frameborder="0" style="border:0"
+    referrerpolicy="no-referrer-when-downgrade"
+    src="https://www.google.com/maps/embed/v1/place?key=<%= Forecasts::Application.config.google_maps_api_key %>&q=<%= "#{forecast_info[:location]}, #{forecast_info[:zipcode]}" %>"
+    allowfullscreen>
+  </iframe>
+</div>

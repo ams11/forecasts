@@ -11,6 +11,9 @@ module Forecasts
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
 
+    config.autoload_paths += %W(#{config.root}/lib)
+    config.autoload_paths += Dir["#{config.root}/lib/**/"]
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files
@@ -18,5 +21,8 @@ module Forecasts
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    config.open_weather_map_api_key = ENV['OPEN_WEATHER_APP_ID']
+    config.google_maps_api_key = ENV['GOOGLE_MAPS_API_KEY']
   end
 end

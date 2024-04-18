@@ -1,0 +1,19 @@
+<h2>Get current weather for:</h2>
+
+<%= form_for(forecast, url: forecasts_path) do |f| %>
+  <div>
+    Enter an address: <%= f.text_field :address, style: "width: 300px" %>
+  </div>
+
+  <% if forecast.errors.any? %>
+    <div style="color:red; margin-top: 10px">
+      <% forecast.errors.messages.each do |field, errors| %>
+        <span>Error:</span> <%= "#{field} #{errors.first}" %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div style="margin-top: 15px">
+    <%= f.submit "Get Weather" %>
+  </div>
+<% end %>
