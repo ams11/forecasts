@@ -15,7 +15,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_18_200739) do
     t.string "zipcode", null: false
     t.boolean "cached", default: false, null: false
     t.json "forecast_data", null: false
-    t.json "upcoming_forecast_data"
+    t.json "upcoming_forecast_data", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
