@@ -22,9 +22,25 @@ RSpec.describe WeatherForecast, type: :model do
   end
 
   describe ".expired?" do
+    let(:active_forecast) { create(:weather_forecast, updated_at: DateTime.now - WeatherForecast::CACHE_LIFETIME + 2.minutes) }
+    let(:expired_forecast) { create(:weather_forecast, :expired) }
+
     it "returns true if the record was updated more than CACHE_LIFETIME ago" do
-      weather_forecast = build(:weather_forecast, updated_at: DateTime.now - WeatherForecast::CACHE_LIFETIME - 1.minute)
-      expect(weather_forecast).to be_expired
+      expect(expired_forecast).to be_expired
+    end
+
+    it "returns false if record was updated less than CACHE_LIFETIME ago" do
+      expect(active_forecast).not_to be_expired
+    end
+
+    it "is included in the recent scope if the forecast is not expired" do
+      expect(WeatherForecast.recent).to include(active_forecast)
+      expect(WeatherForecast.recent).not_to include(expired_forecast)
+    end
+
+    it "is included in the expired scope if the forecast is not expired" do
+      expect(WeatherForecast.expired).to include(expired_forecast)
+      expect(WeatherForecast.expired).not_to include(active_forecast)
     end
   end
 end

@@ -10,7 +10,7 @@ class WeatherService
     HTTParty.get(weather_url)
   end
 
-  def retrieve_weather_forecast(latitude:, longitude:, days: 7)
+  def retrieve_weather_forecast(latitude:, longitude:)
     forecast_url = "https://api.openweathermap.org/data/3.0/onecall?lat=#{latitude}&lon=#{longitude}&exclude=hourly,minutely,current&appid=#{@app_id}&units=imperial"
     HTTParty.get(forecast_url)
   end

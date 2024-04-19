@@ -30,6 +30,8 @@ class ForecastRetriever
     forecast
   end
 
+  private
+
   def parse_address(address:)
     result = geocode_address(address: address)
     return nil unless result
@@ -42,8 +44,6 @@ class ForecastRetriever
 
     result
   end
-
-  private
 
   def weather_service
     @weather_service ||= WeatherService.new(Forecasts::Application.config.open_weather_map_api_key)
