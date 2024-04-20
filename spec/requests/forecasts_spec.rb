@@ -9,11 +9,17 @@ RSpec.describe "/forecasts", type: :request do
   let(:zipcode) { "98345" }
 
   describe "GET /show" do
-    it "renders a successful response" do
+    it "renders a successful response for a new zipcode" do
       stub_geocode(lat: lat, lon: lon, zipcode: zipcode, address: zipcode)
       stub_forecast(lat: lat, lon: lon)
 
       get forecast_url(zipcode)
+      expect(response).to be_successful
+    end
+
+    it "renders a successful response for a zipcode that we already have a forecast for" do
+      forecast = create(:weather_forecast)
+      get forecast_url(forecast.zipcode)
       expect(response).to be_successful
     end
   end
