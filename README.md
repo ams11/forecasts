@@ -15,6 +15,7 @@ Application notes:
  - the weather info is re-used for any additional requests that resolve to that same zipcode for the next 30 minutes (and labeled as cached). After 30 minutes, the cache is expired, and the next request will query the weather again.
  - the application also retrieves a 7 day forecast and includes it in the results, along with a map of the requested location
  - the standard workflow is to enter the address for the weather information on the home page, which will then retrieve the weather info and redirect the user to the display page. Alternatively, it's possible to navigate directly to the display page (e.g. http://localhost:3000/forecasts/90210), without first having queried for the weather for that zipcode, and the app will automatically retrieve weather info (assuming a valid zipcode)
+ - weather information for a zipcode will be cached for 30 minutes (and the page will show a "Cached" label if navigating back to it within the 30 minutes). A new request after 30 minutes will make a new call to retrieve updated weather information.
 
 Known issues:
  - the forecasts are keyed off of postal codes from around the world, however, the postal codes are not limited by country, so it is possible to have a conflict, as postal codes can be the same in different countries. For example, 08007 is the postal code for a neighborhood in Barcelona, Spain, as well as the town of Barrington, NJ in the US. The better long term solution would be to store the country id and the postal code and include both in the route for the weather display. 
