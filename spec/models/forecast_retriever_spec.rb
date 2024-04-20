@@ -83,5 +83,21 @@ RSpec.describe ForecastRetriever, type: :model do
         end.to change(WeatherForecast, :count)
       end
     end
+
+    describe "if given an address that does not resolve to a postal code" do
+      let(:postal_code) { nil }
+      let(:address) { "Olgiy, Mongolia" } # Mongolia does not appear to use postal codes(?)
+
+      before do
+        stub_geocode(lat: lat, lon: lon, zipcode: zipcode, address: "#{lat}, #{lon}", postal_code: [nil])
+      end
+
+      it "returns a WeatherForecast with an error" do
+        expect(Rails.logger).to receive(:error).once.with("Could not determine a postal code from address #{address}")
+        # expect(Rails.logger).to receive(:error).once.with("Could not geocode address #{address}")
+        forecast = forecast_retriever.retrieve_forecast(address: address)
+        expect(forecast.errors.messages[:address]).to include("could not be parsed")
+      end
+    end
   end
 end

@@ -18,4 +18,14 @@ RSpec.describe "forecasts/show", type: :view do
     expect(rendered).to match(/Temperature/)
     expect(rendered).to match(/7 Day Forecast:/)
   end
+
+  it "shows the Cached label for a cached forecast" do
+    expect(@forecast.update(cached: true)).to eq(true)
+
+    render template: "forecasts/show", locals: { forecast_info: weather_display_info(@forecast) }
+
+    expect(rendered).to match(/Forecast for/)
+    expect(rendered).to match(@forecast.zipcode)
+    expect(rendered).to match(/Cached/)
+  end
 end
