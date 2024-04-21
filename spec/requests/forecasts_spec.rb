@@ -7,19 +7,20 @@ RSpec.describe "/forecasts", type: :request do
   let(:lat) { 47.56 }
   let(:lon) { -122.28 }
   let(:zipcode) { "98345" }
+  let(:country) { "United States" }
 
-  describe "GET /show" do
-    it "renders a successful response for a new zipcode" do
-      stub_geocode(lat: lat, lon: lon, zipcode: zipcode, address: zipcode)
+  describe "GET /forecasts/:country/:zipcode" do
+    it "renders a successful response for a new country and zipcode" do
+      stub_geocode(lat: lat, lon: lon, zipcode: zipcode, address: "#{zipcode}, #{country}")
       stub_forecast(lat: lat, lon: lon)
 
-      get forecast_url(zipcode)
+      get country_zipcode_forecast_url(country.parameterize, zipcode)
       expect(response).to be_successful
     end
 
-    it "renders a successful response for a zipcode that we already have a forecast for" do
+    it "renders a successful response for a country/zipcode combo that we already have a forecast for" do
       forecast = create(:weather_forecast)
-      get forecast_url(forecast.zipcode)
+      get country_zipcode_forecast_url(forecast.country, forecast.zipcode)
       expect(response).to be_successful
     end
   end
@@ -51,7 +52,7 @@ RSpec.describe "/forecasts", type: :request do
 
       it "redirects to the new forecast" do
         post forecasts_url, params: { weather_forecast: attributes }
-        expect(response).to redirect_to(forecast_url(WeatherForecast.last.zipcode))
+        expect(response).to redirect_to(country_zipcode_forecast_path(WeatherForecast.last.country, WeatherForecast.last.zipcode))
       end
     end
 

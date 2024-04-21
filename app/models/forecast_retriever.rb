@@ -17,8 +17,9 @@ class ForecastRetriever
       Rails.logger.error("Could not determine a postal code from address #{address}")
       return invalid_address(address)
     end
+    country_param = parsed_address.components["country"][0]&.parameterize
 
-    forecast = WeatherForecast.find_by(zipcode: zipcode)
+    forecast = WeatherForecast.find_by(zipcode: zipcode, country: country_param)
     if forecast.nil? || forecast.expired?
       forecast_data = weather_service.retrieve_weather(latitude: parsed_address.latitude, longitude: parsed_address.longitude)
       upcoming_forecast_data = weather_service.retrieve_weather_forecast(latitude: parsed_address.latitude, longitude: parsed_address.longitude)
@@ -26,7 +27,7 @@ class ForecastRetriever
       if forecast
         forecast.update!(forecast_data: forecast_data, upcoming_forecast_data: upcoming_forecast_data, cached: false)
       else
-        forecast = WeatherForecast.create!(zipcode: zipcode, forecast_data: forecast_data, upcoming_forecast_data: upcoming_forecast_data)
+        forecast = WeatherForecast.create!(country: country_param, zipcode: zipcode, forecast_data: forecast_data, upcoming_forecast_data: upcoming_forecast_data)
       end
     end
 
