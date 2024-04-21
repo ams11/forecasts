@@ -18,7 +18,7 @@ class ForecastsController < ApplicationController
     if @forecast.nil? || @forecast.errors.any?
       render "new", locals: { forecast: @forecast }
     else
-      redirect_to forecast_path(@forecast.zipcode)
+      redirect_to country_zipcode_forecast_path(@forecast.country, @forecast.zipcode)
     end
   end
 
@@ -28,7 +28,7 @@ class ForecastsController < ApplicationController
     unless forecast
       # support retrieving new weather forecasts by navigating directly to the url for a specific zipcode
       forecast_retriever = ForecastRetriever.new
-      @forecast = forecast_retriever.retrieve_forecast(address: forecast_zipcode_param)
+      @forecast = forecast_retriever.retrieve_forecast(address: "#{forecast_zipcode_param}, #{forecast_country_param}")
       if @forecast.nil? || @forecast.errors.any?
         render "new", locals: { forecast: @forecast } and return
       end
@@ -46,11 +46,21 @@ class ForecastsController < ApplicationController
   end
 
   def forecast
-    @forecast ||= WeatherForecast.recent.find_by(zipcode: forecast_zipcode_param)
+    @forecast ||= WeatherForecast.recent.find_by(country: forecast_country_param, zipcode: forecast_zipcode_param)
+  end
+
+  def forecast_params
+    params.permit(:country, :zipcode)
+  end
+
+  def forecast_country_param
+    return nil unless forecast_params.key?(:country)
+
+    forecast_params.fetch(:country)
   end
 
   def forecast_zipcode_param
-    params.permit(:id).fetch(:id)
+    forecast_params.fetch(:zipcode)
   end
 
   def weather_forecast_params

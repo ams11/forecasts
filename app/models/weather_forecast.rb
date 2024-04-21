@@ -9,8 +9,8 @@ class WeatherForecast < ApplicationRecord
   # but potentially an option for the future.
   scope :expired, -> { where("updated_at < ?", DateTime.now - CACHE_LIFETIME) }
 
-  validates :zipcode, uniqueness: true
-  validates :zipcode, :forecast_data, :upcoming_forecast_data, presence: true
+  validates :zipcode, uniqueness: { scope: :country }
+  validates :country, :zipcode, :forecast_data, :upcoming_forecast_data, presence: true
 
   def expired?
     updated_at < DateTime.now - CACHE_LIFETIME
