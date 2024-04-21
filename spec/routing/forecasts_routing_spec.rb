@@ -6,13 +6,19 @@ RSpec.describe ForecastsController, type: :routing do
       expect(get: "/forecasts/new").to route_to("forecasts#new")
     end
 
-    it "routes to #show" do
-      zipcode = "12345"
-      expect(get: "/forecasts/#{zipcode}").to route_to("forecasts#show", id: zipcode)
-    end
-
     it "routes to #create" do
       expect(post: "/forecasts").to route_to("forecasts#create")
+    end
+
+    it "routes to #zipcode_forecast" do
+      zipcode = "12345"
+      expect(get: "/forecasts/#{zipcode}").to route_to("forecasts#show", zipcode: zipcode)
+    end
+
+    it "routes to #country_zipcode_forecast" do
+      country = "spain"
+      zipcode = "12345"
+      expect(get: "/forecasts/#{country}/#{zipcode}").to route_to("forecasts#show", country: country, zipcode: zipcode)
     end
   end
 end

@@ -6,6 +6,7 @@ RSpec.describe ForecastRetriever, type: :model do
 
   let(:forecast_retriever) { ForecastRetriever.new }
   let(:zipcode) { Faker::Address.zip_code }
+  let(:country) { "united-states" }
   let(:lat) { 47.56 }
   let(:lon) { -122.28 }
 
@@ -51,7 +52,7 @@ RSpec.describe ForecastRetriever, type: :model do
       expect_any_instance_of(WeatherService).not_to receive(:retrieve_weather)
       expect_any_instance_of(WeatherService).not_to receive(:retrieve_weather_forecast)
 
-      forecast = create(:weather_forecast, zipcode: zipcode)
+      forecast = create(:weather_forecast, zipcode: zipcode, country: country)
       timestamp = forecast.updated_at
       expect do
         forecast_retriever.retrieve_forecast(address: address)

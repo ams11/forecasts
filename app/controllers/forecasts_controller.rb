@@ -28,7 +28,7 @@ class ForecastsController < ApplicationController
     unless forecast
       # support retrieving new weather forecasts by navigating directly to the url for a specific zipcode
       forecast_retriever = ForecastRetriever.new
-      @forecast = forecast_retriever.retrieve_forecast(address: "#{forecast_zipcode_param}, #{forecast_country_param}")
+      @forecast = forecast_retriever.retrieve_forecast(address: "#{forecast_zipcode_param}, #{forecast_country}")
       if @forecast.nil? || @forecast.errors.any?
         render "new", locals: { forecast: @forecast } and return
       end
@@ -57,6 +57,10 @@ class ForecastsController < ApplicationController
     return nil unless forecast_params.key?(:country)
 
     forecast_params.fetch(:country)
+  end
+
+  def forecast_country
+    GeolocateService::COUNTRY_MAP[forecast_country_param]
   end
 
   def forecast_zipcode_param

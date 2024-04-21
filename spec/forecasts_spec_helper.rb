@@ -44,11 +44,12 @@ module ForecastsSpecHelper
 
   def stub_geocode(
     lat:, lon:, zipcode:,
+    country: ["United States"],
     address: Faker::Address.full_address,
     location: instance_double("Google::Maps::Location", latitude: lat, longitude: lon),
     postal_code: [zipcode]
     )
-    allow(location).to receive(:components).and_return({ "postal_code" => postal_code }) if location
+    allow(location).to receive(:components).and_return({ "postal_code" => postal_code, "country" => country }) if location
     expect(Google::Maps).to receive(:geocode).with(address).once.and_return([location])
   end
 

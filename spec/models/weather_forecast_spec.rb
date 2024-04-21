@@ -3,11 +3,12 @@ require 'rails_helper'
 RSpec.describe WeatherForecast, type: :model do
   describe "validations" do
     it "flags any missing fields that are required" do
-      weather_forecast = WeatherForecast.new
+      weather_forecast = WeatherForecast.new(country: nil)
       expect(weather_forecast).not_to be_valid
-      expect(weather_forecast.errors.count).to eq(3)
+      expect(weather_forecast.errors.count).to eq(4)
 
       expect(weather_forecast.errors.messages[:zipcode]).to include("can't be blank")
+      expect(weather_forecast.errors.messages[:country]).to include("can't be blank")
       expect(weather_forecast.errors.messages[:upcoming_forecast_data]).to include("can't be blank")
       expect(weather_forecast.errors.messages[:forecast_data]).to include("can't be blank")
     end
@@ -18,6 +19,13 @@ RSpec.describe WeatherForecast, type: :model do
       weather_forecast_dupe = build(:weather_forecast, zipcode: weather_forecast.zipcode)
       expect(weather_forecast_dupe).not_to be_valid
       expect(weather_forecast_dupe.errors.messages[:zipcode]).to include("has already been taken")
+    end
+
+    it "allows duplicate zipcodes in different countries" do
+      weather_forecast = create(:weather_forecast, country: "japan")
+      expect(weather_forecast).to be_valid
+      weather_forecast_dupe = build(:weather_forecast, zipcode: weather_forecast.zipcode, country: "argentina")
+      expect(weather_forecast_dupe).to be_valid
     end
   end
 

@@ -18,7 +18,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_21_054657) do
     t.json "upcoming_forecast_data", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "country"
+    t.string "country", default: "united-states", null: false
   end
 
 end
